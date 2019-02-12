@@ -124,6 +124,6 @@ export function run() {
   ]);
 
   httpServer.listen(PORT, () => {
-    console.log(`[http] Listening on port ${PORT}`);
+    console.log(`[http] Listening: http://localhost:${PORT}`);
   });
 }
