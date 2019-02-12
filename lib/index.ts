@@ -69,12 +69,7 @@ export function run() {
 
   const scssCompiler = SHOULD_COMPILE_SCSS ? getScssCompiler() : null;
 
-
-  const handleFileChange = (
-    event: string,
-    filename?: string,
-    maybeData?: any
-  ) => {
+  const handleFileChange = (event: string, filename?: string) => {
     if (filename && /\.map$/.test(filename)) {
       return;
     }
@@ -82,7 +77,7 @@ export function run() {
     const data: {} = {
       event: event,
       filename: filename,
-      shouldReload: maybeData
+      shouldReload: true
     };
 
     sendToSocketClients(socketServer, data);
