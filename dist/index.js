@@ -11,7 +11,6 @@ const socket_server_1 = require("./socket_server");
 const http_server_1 = require("./http_server");
 const process_helpers_1 = require("./process_helpers");
 function run() {
-    console.log('Main!');
     const SHOULD_COMPILE_SCSS = false;
     const [_shell, _script, serverRootFolder = 'build'] = process.argv;
     const PORT = 3000;
@@ -54,8 +53,8 @@ function run() {
     const httpServer = http_1.default.createServer(handleRequest);
     const socketServer = socket_server_1.getSocketServer(SOCKET_PORT);
     const fileWatcher = folder_watcher_1.getFolderWatcher(SERVER_ROOT_FOLDER);
-    const scssCompiler = SHOULD_COMPILE_SCSS ? getScssCompiler() : null;
     const rootPublicWatcher = folder_watcher_1.getFolderWatcher(SERVER_PUBLIC_FOLDER);
+    const scssCompiler = SHOULD_COMPILE_SCSS ? getScssCompiler() : null;
     const handleFileChange = (event, filename, maybeData) => {
         if (filename && /\.map$/.test(filename)) {
             return;

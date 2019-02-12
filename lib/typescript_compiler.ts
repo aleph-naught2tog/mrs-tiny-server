@@ -1,11 +1,16 @@
 import child_process from 'child_process'; // https://nodejs.org/api/child_process.html
 
-export function startTypescriptCompiler(): child_process.ChildProcess {
-  const watchOptions = ['--pretty', '--preserveWatchOutput'];
+export function startTypescriptCompiler(
+  tsconfigPathRelativeToCwd: string = 'tsconfig.json'
+): child_process.ChildProcess {
+  const configPath = process.cwd() + '/' + tsconfigPathRelativeToCwd;
+  const defaultOptions = ['--pretty', '--preserveWatchOutput'];
+  const projectOptions = ['--project', configPath];
 
   const typescriptProcess = child_process.spawn('tsc', [
     '--watch',
-    ...watchOptions
+    ...defaultOptions,
+    ...projectOptions
   ]);
 
   typescriptProcess.stdout.on('data', (data: Buffer) => {
@@ -14,7 +19,7 @@ export function startTypescriptCompiler(): child_process.ChildProcess {
   });
 
   typescriptProcess.stderr.on('data', (data: Buffer) => {
-    console.error('[tsc:err]', data.toString('utf8').trimRight());
+    console.error('[tsc:err]', data.toString('utf8').trim());
   });
 
   return typescriptProcess;

@@ -8,7 +8,6 @@ import { setContentType, getServerPathForUrl } from './http_server';
 import { setCleanupActions } from './process_helpers';
 
 export function run() {
-  console.log('Main!');
   /* HEY YOUR SCSS IS BROKEN BECAUSE OF THIS HERE LINE */
   const SHOULD_COMPILE_SCSS = false;
 
@@ -66,9 +65,10 @@ export function run() {
   const httpServer = http.createServer(handleRequest);
   const socketServer = getSocketServer(SOCKET_PORT);
   const fileWatcher = getFolderWatcher(SERVER_ROOT_FOLDER);
+  const rootPublicWatcher = getFolderWatcher(SERVER_PUBLIC_FOLDER);
+
   const scssCompiler = SHOULD_COMPILE_SCSS ? getScssCompiler() : null;
 
-  const rootPublicWatcher = getFolderWatcher(SERVER_PUBLIC_FOLDER);
 
   const handleFileChange = (
     event: string,
@@ -110,7 +110,7 @@ export function run() {
     () => {
       if (typescriptCompiler) {
         console.error('[tsc] Shutting down.');
-        typescriptCompiler.kill(); // `kill` is a kind of signal sent to a process
+        typescriptCompiler.kill();
       }
     },
     () => {
