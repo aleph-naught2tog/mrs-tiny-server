@@ -1,4 +1,4 @@
-import ws from "ws";
+import ws from 'ws';
 
 export function sendToSocketClients(socketServer: ws.Server, data: {}) {
   const stringifiedData = JSON.stringify(data);
@@ -6,18 +6,24 @@ export function sendToSocketClients(socketServer: ws.Server, data: {}) {
   socketServer.clients.forEach((client: ws) => {
     client.send(stringifiedData, console.error);
   });
-};
+}
 
 export function getSocketServer(port: number): ws.Server {
   const socketServer = new ws.Server({ port: port, clientTracking: true });
 
-  socketServer.on("connection", clientSocket => {
+  socketServer.on('connection', clientSocket => {
     console.log(`[ws] Client connected.`);
 
-    clientSocket.on("close", () => {
+    clientSocket.on('close', () => {
       console.log(`[ws] Client disconnected`);
       clientSocket.terminate();
     });
+
+    clientSocket.onmessage = ({ data }) => {
+      if (data === 'ping') {
+        clientSocket.send(JSON.stringify({type: 'pong'}));
+      }
+    };
   });
 
   return socketServer;

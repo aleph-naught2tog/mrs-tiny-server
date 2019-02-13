@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "strict": true,
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strict": true,
     "removeComments": true,
     "noEmit": false,
-    "outDir": "./dist"
+    "outDir": "./lib"
   },
   "files": [
-    "lib/index.ts"
+    "src/index.ts"
   ]
 }

@@ -1,9 +1,10 @@
 import child_process from 'child_process'; // https://nodejs.org/api/child_process.html
+import { cwdTo } from './utils/general';
 
 export function startTypescriptCompiler(
   tsconfigPathRelativeToCwd: string = 'tsconfig.json'
 ): child_process.ChildProcess {
-  const configPath = process.cwd() + '/' + tsconfigPathRelativeToCwd;
+  const configPath = cwdTo(tsconfigPathRelativeToCwd);
   const defaultOptions = ['--pretty', '--preserveWatchOutput'];
   const projectOptions = ['--project', configPath];
 
