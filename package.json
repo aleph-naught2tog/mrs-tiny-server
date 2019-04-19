@@ -18,16 +18,19 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^24.0.1",
-    "@types/node": "^10.12.21",
+    "@types/jest": "^24.0.11",
+    "@types/node": "^10.14.4",
     "@types/ws": "^6.0.1",
-    "jest": "^24.1.0",
+    "jest": "^24.7.1",
     "ts-jest": "^23.10.5",
-    "typescript": "^3.3.1",
-    "ws": "^6.1.3"
+    "typescript": "^3.4.4",
+    "ws": "^6.2.1"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/aleph-naught2tog/mrs-tiny-server.git"
+  },
+  "dependencies": {
+    "webpack": "^4.30.0"
   }
 }
