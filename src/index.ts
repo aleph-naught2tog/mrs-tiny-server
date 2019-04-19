@@ -6,22 +6,21 @@ import { startTypescriptCompiler } from './typescript_compiler';
 import { getSocketServer, sendToSocketClients } from './socket_server';
 import { setContentType, getServerPathForUrl } from './http_server';
 import { setCleanupActions } from './process_helpers';
+import { cwdTo } from './utils/general';
 
 export function run() {
-  console.log('Main!');
-  /* HEY YOUR SCSS IS BROKEN BECAUSE OF THIS HERE LINE */
-  const SHOULD_COMPILE_SCSS = false;
-
   const [_shell, _script, serverRootFolder = 'build'] = process.argv;
+
+  const SHOULD_COMPILE_SCSS = false;
 
   const PORT: number = 3000;
   const SOCKET_PORT: number = 3333;
 
-  const SERVER_ROOT_FOLDER: string = `${process.cwd()}/${serverRootFolder}`;
-  const SERVER_PUBLIC_FOLDER: string = `${process.cwd()}/public`;
+  const SERVER_ROOT_FOLDER: string = cwdTo(serverRootFolder);
+  const SERVER_PUBLIC_FOLDER: string = cwdTo('public');
 
-  const FOLDER: string = process.cwd() + '';
-  const SCSS_INPUT: string = `${FOLDER}/scss`;
+  const PROJECT_ROOT: string = process.cwd() + '';
+  const SCSS_INPUT: string = `${PROJECT_ROOT}/scss`;
   const CSS_OUTPUT: string = `${SERVER_ROOT_FOLDER}/css`;
 
   const getScssCompiler = () => {
@@ -66,15 +65,11 @@ export function run() {
   const httpServer = http.createServer(handleRequest);
   const socketServer = getSocketServer(SOCKET_PORT);
   const fileWatcher = getFolderWatcher(SERVER_ROOT_FOLDER);
-  const scssCompiler = SHOULD_COMPILE_SCSS ? getScssCompiler() : null;
-
   const rootPublicWatcher = getFolderWatcher(SERVER_PUBLIC_FOLDER);
 
-  const handleFileChange = (
-    event: string,
-    filename?: string,
-    maybeData?: any
-  ) => {
+  const scssCompiler = SHOULD_COMPILE_SCSS ? getScssCompiler() : null;
+
+  const handleFileChange = (event: string, filename?: string) => {
     if (filename && /\.map$/.test(filename)) {
       return;
     }
@@ -82,7 +77,7 @@ export function run() {
     const data: {} = {
       event: event,
       filename: filename,
-      shouldReload: maybeData
+      shouldReload: true
     };
 
     sendToSocketClients(socketServer, data);
@@ -110,14 +105,14 @@ export function run() {
     () => {
       if (typescriptCompiler) {
         console.error('[tsc] Shutting down.');
-        typescriptCompiler.kill(); // `kill` is a kind of signal sent to a process
+        typescriptCompiler.kill();
       }
     },
     () => {
       if (socketServer) {
         console.error('[ws] Shutting down.');
-        socketServer.clients.forEach(client => client.terminate());
-        socketServer.close();
+        socketServer.clients.forEach(client => client.close());
+        socketServer.close(console.log);
       }
     },
     () => {
@@ -130,5 +125,6 @@ export function run() {
 
   httpServer.listen(PORT, () => {
     console.log(`[http] Listening on port ${PORT}`);
+    console.log(`[http] http://localhost:${PORT}`);
   });
 }
